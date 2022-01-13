@@ -1,11 +1,16 @@
 package com.example.assestmanagement;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -20,25 +25,40 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 import com.speedata.libuhf.IUHFService;
 import com.speedata.libuhf.UHFManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryForm extends AppCompatActivity {
-    Button Back, NewBtn, StartReading;
+    Button Back, NewBtn, StartReading, Searchbtn;
     RadioGroup radioGroup;
     RecyclerView recyclerView;
     CoordinatorLayout coordinatorLayout;
     Adapter_Inventory adapter_inventory;
+    ProgressDialog dialog;
     List<DataModel_Inventory> ListInventory;
-    IUHFService iuhfService;
+    //    IUHFService iuhfService;
     TextView Total, Found, NotFound;
     LooperDemo looperDemo;
-    String result;
-    EditText SearchKey;
+    AutoCompleteTextView SearchKey;
+    String Parameter;
+    List<String> suggest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +74,12 @@ public class InventoryForm extends AppCompatActivity {
         Total = findViewById(R.id.Total);
         Found = findViewById(R.id.Found);
         NotFound = findViewById(R.id.not_found);
+        Searchbtn = findViewById(R.id.Search);
         radioGroup.clearCheck();
-        iuhfService = UHFManager.getUHFService(this);
-        iuhfService.setAntennaPower(20);
+        dialog = new ProgressDialog(this);
+
+//        iuhfService = UHFManager.getUHFService(this);
+//        iuhfService.setAntennaPower(20);
         looperDemo = new LooperDemo();
         Handler handler = new Handler(getMainLooper()) {
             @Override
@@ -64,39 +87,43 @@ public class InventoryForm extends AppCompatActivity {
                 super.handleMessage(msg);
             }
         };
+        //SuggestionList
+        SuggestList();
+        suggest = new ArrayList<>();
+
         //ListenerButton
         NewBtn.setOnClickListener(v -> Clear());
         Back.setOnClickListener(v -> startActivity(new Intent(InventoryForm.this, MainActivity.class)));
-        StartReading.setOnClickListener(v -> {
-            Button b = (Button) v;
-            String buttonText = b.getText().toString();
-            if (buttonText.matches("Start")) {
-                iuhfService.openDev();
-                iuhfService.selectCard(1, "", false);
-                iuhfService.inventoryStart();
-                StartReading.setText("STOP");
-                iuhfService.setOnInventoryListener(var1 -> {
-
-                    runOnUiThread(() -> Toast.makeText(InventoryForm.this, result, Toast.LENGTH_SHORT).show());
-                    result = var1.getEpc();
-                    looperDemo.execute(() -> {
-                        Message message = Message.obtain();
-                        message.obj = result;
-                        handler.sendMessage(message);
-                    });
-//                    if (!tempList.contains(result))
-//                    {
-//                    tempList.add(result);}
-//                    Log.d("UHFService", "Callback");
-                });
-
-            } else {
-                iuhfService.inventoryStop();
-                iuhfService.closeDev();
-                StartReading.setText("Start");
-            }
-
-        });
+//        StartReading.setOnClickListener(v -> {
+//            Button b = (Button) v;
+//            String buttonText = b.getText().toString();
+//            if (buttonText.matches("Start")) {
+//                iuhfService.openDev();
+//                iuhfService.selectCard(1, "", false);
+//                iuhfService.inventoryStart();
+//                StartReading.setText("STOP");
+//                iuhfService.setOnInventoryListener(var1 -> {
+//
+//                    runOnUiThread(() -> Toast.makeText(InventoryForm.this, result, Toast.LENGTH_SHORT).show());
+//                    result = var1.getEpc();
+//                    looperDemo.execute(() -> {
+//                        Message message = Message.obtain();
+//                        message.obj = result;
+//                        handler.sendMessage(message);
+//                    });
+////                    if (!tempList.contains(result))
+////                    {
+////                    tempList.add(result);}
+////                    Log.d("UHFService", "Callback");
+//                });
+//
+//            } else {
+//                iuhfService.inventoryStop();
+//                iuhfService.closeDev();
+//                StartReading.setText("Start");
+//            }
+//
+//        });
 
         //Left Swipe Delete Function
         enableSwipeToDeleteAndUndo();
@@ -105,26 +132,148 @@ public class InventoryForm extends AppCompatActivity {
             RadioButton MaterialCode = (RadioButton) group.findViewById(R.id.MaterialCode);
 
             if (checkedId == R.id.MaterialCode) {
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                        (this, android.R.layout.simple_list_item_1, suggest);
+                SearchKey.setAdapter(adapter);
+                Parameter = MaterialCode.getText().toString();
                 Toast.makeText(InventoryForm.this, MaterialCode.getText(), Toast.LENGTH_SHORT).show();
                 SearchKey.setHint("Enter Material Code");
             } else if (checkedId == R.id.Location) {
                 Toast.makeText(InventoryForm.this, Location.getText(), Toast.LENGTH_SHORT).show();
                 SearchKey.setHint("Enter Location");
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                        (this, android.R.layout.simple_list_item_1, suggest);
+                SearchKey.setAdapter(adapter);
+                Parameter = Location.getText().toString();
+
 
             }
         });
 
 
         ListInventory = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            ListInventory.add(new DataModel_Inventory("Tools ", String.valueOf(i)));
-        }
-        adapter_inventory = new Adapter_Inventory(ListInventory, this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter_inventory);
 
+        Searchbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String value = SearchKey.getText().toString();
+
+                try {
+                    if (value.length() == 0) {
+                        SearchKey.setError("Enter Value..");
+                    } else {
+                        FetchData(Parameter, value);
+                        dialog.show();
+                        dialog.setMessage(getString(R.string.Dialog_Text));
+                        dialog.setCancelable(false);
+                        SearchKey.setText("");
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
+
+    private void SuggestList() {
+        String url = "http://164.52.223.163:4501/api/storematerial/distinctlocation";
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONArray array = new JSONArray(response);
+                    for (int i = 0; i < array.length(); i++) {
+                        System.out.println("Location " + array.getString(i));
+                        suggest.add(array.getString(i));
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        //adding the request to volley
+        Volley.newRequestQueue(this).add(request);
+
+    }
+
+    private void FetchData(String parameter, String value) throws JSONException {
+
+        String url = "http://164.52.223.163:4501/api/storematerial/storeinventory";
+        JSONObject obj = new JSONObject();
+//        obj.put("AccessNo", "B1228");
+        obj.put(parameter, value);
+//        obj.put("Material Code","8411630145" );
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+
+        final String requestBody = obj.toString();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
+
+            try {
+                JSONArray array = new JSONArray(response);
+                int len = array.length();
+                Total.setText("0");
+                Total.setText(String.valueOf(len));
+//                Toast.makeText(SearchForm.this, response, Toast.LENGTH_SHORT).show();
+//                len = array.length();
+//                total.setText(String.valueOf(len));
+
+
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject object = array.getJSONObject(i);
+                    String Material_Name = object.getString("Material_Name");
+                    String Material_Model = object.getString("Material_ID");
+                    String Material_Department = object.getString("Material_Department");
+                    String Location = object.getString("Location");
+
+                    ListInventory.add(new DataModel_Inventory(Material_Name, Material_Model, Location, Material_Department));
+//
+//                    TempList_Inventory.add(RFIDNO);
+                }
+                adapter_inventory = new Adapter_Inventory(ListInventory, getApplicationContext());
+                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                recyclerView.setAdapter(adapter_inventory);
+//                                 dialog.dismiss();
+//                    Toast.makeText(Inventory_form.this, name, Toast.LENGTH_LONG).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.i("VOLLEY", response);
+            dialog.dismiss();
+        }, error -> {
+            Log.e("VOLLEY Negative", error.toString());
+            dialog.dismiss();
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                    return null;
+                }
+            }
+        };
+
+        queue.add(stringRequest);
+    }
+
 
     private void enableSwipeToDeleteAndUndo() {
         SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(this) {

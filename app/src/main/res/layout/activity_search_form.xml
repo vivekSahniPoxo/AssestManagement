@@ -96,9 +96,9 @@
                             android:layout_width="180dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-
                             android:layout_marginBottom="8dp"
-                            android:text="Material code"
+                            android:checked="true"
+                            android:text="Material Code"
                             android:textSize="20dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/MaterialID"
@@ -123,26 +123,26 @@
                     </RadioGroup>
 
 
-                    <EditText
-                        android:id="@+id/SearchKEy"
+                    <AutoCompleteTextView
+                        android:id="@+id/SearchKey"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
-
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
                         android:background="@drawable/custom_edittext"
                         android:ems="10"
-                        android:inputType="textPersonName"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/black"
+                        android:inputType="textPostalAddress"
+                        android:textAllCaps="true"
                         app:layout_constraintBottom_toTopOf="@+id/Reading_btn"
-                        app:layout_constraintEnd_toStartOf="@+id/Add_accession"
+                        app:layout_constraintEnd_toStartOf="@+id/Search_Data"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/RadioButtonGroup" />
 
                     <Button
-                        android:id="@+id/Add_accession"
+                        android:id="@+id/Search_Data"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_marginEnd="16dp"
@@ -160,6 +160,7 @@
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="8dp"
                         android:background="@drawable/custom_btn"
@@ -169,7 +170,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/Accession_no" />
+                        app:layout_constraintTop_toBottomOf="@+id/SearchKEy" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

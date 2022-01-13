@@ -1,30 +1,6 @@
 package com.example.assestmanagement;
 
 public class Data_Model_Search {
-    String ToolNmae;
-    String ToolsId;
-
-    public String getToolNmae() {
-        return ToolNmae;
-    }
-
-    public void setToolNmae(String toolNmae) {
-        ToolNmae = toolNmae;
-    }
-
-    public String getToolsId() {
-        return ToolsId;
-    }
-
-    public void setToolsId(String toolsId) {
-        ToolsId = toolsId;
-    }
-
-    public Data_Model_Search(String toolNmae, String toolsId) {
-        ToolNmae = toolNmae;
-        ToolsId = toolsId;
-    }
-
 
     private String id;
     private String materialID;
@@ -40,6 +16,13 @@ public class Data_Model_Search {
     private String assigned;
     private String assignedToEmpID;
     private String status;
+
+    public Data_Model_Search(String materialName, String materialID , String location, String materialDepartment) {
+        this.materialName = materialName;
+        this.materialID = materialID;
+        this.location = location;
+        this.materialDepartment = materialDepartment;
+    }
 
     public String getId() {
         return id;

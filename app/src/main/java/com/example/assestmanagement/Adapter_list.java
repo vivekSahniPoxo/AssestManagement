@@ -42,8 +42,11 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
         Data_Model_Search model_search = list.get(position);
 
         //Binding Data with components
-        holder.Title.setText(model_search.getToolsId());
-        holder.publisher.setText(model_search.getToolNmae());
+        holder.head_subject.setText(model_search.getMaterialName());
+        holder.head_title.setText(model_search.getMaterialID());
+        holder.publisher.setText(model_search.getLocation());
+        holder.language.setText(model_search.getMaterialDepartment());
+//        holder.
 //        holder.Subject.setText(model_search.getSubjectTitle());
 //        holder.author.setText(model_search.getAuthor());
 //        holder.edition.setText(model_search.getEdition());

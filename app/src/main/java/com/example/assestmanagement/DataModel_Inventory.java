@@ -1,27 +1,139 @@
 package com.example.assestmanagement;
 
 public class DataModel_Inventory {
-   String Location;
-   String ToolsName;
 
-    public DataModel_Inventory(String location, String toolsName) {
-        Location = location;
-        ToolsName = toolsName;
+    private String id;
+    private String materialID;
+    private String materialName;
+    private String materialModel;
+    private String location;
+    private String materialDepartment;
+    private String materialStatus;
+    private String rol;
+    private String dateOfEntry;
+    private String cost;
+    private String tagID;
+    private String assigned;
+    private String assignedToEmpID;
+    private String status;
+
+    public DataModel_Inventory(String materialName, String materialID , String location, String materialDepartment) {
+        this.materialName = materialName;
+        this.materialID = materialID;
+        this.location = location;
+        this.materialDepartment = materialDepartment;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getMaterialID() {
+        return materialID;
+    }
+
+    public void setMaterialID(String materialID) {
+        this.materialID = materialID;
+    }
+
+    public String getMaterialName() {
+        return materialName;
+    }
+
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName;
+    }
+
+    public String getMaterialModel() {
+        return materialModel;
+    }
+
+    public void setMaterialModel(String materialModel) {
+        this.materialModel = materialModel;
     }
 
     public String getLocation() {
-        return Location;
+        return location;
     }
 
     public void setLocation(String location) {
-        Location = location;
+        this.location = location;
     }
 
-    public String getToolsName() {
-        return ToolsName;
+    public String getMaterialDepartment() {
+        return materialDepartment;
     }
 
-    public void setToolsName(String toolsName) {
-        ToolsName = toolsName;
+    public void setMaterialDepartment(String materialDepartment) {
+        this.materialDepartment = materialDepartment;
     }
+
+    public String getMaterialStatus() {
+        return materialStatus;
+    }
+
+    public void setMaterialStatus(String materialStatus) {
+        this.materialStatus = materialStatus;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
+    public String getDateOfEntry() {
+        return dateOfEntry;
+    }
+
+    public void setDateOfEntry(String dateOfEntry) {
+        this.dateOfEntry = dateOfEntry;
+    }
+
+    public String getCost() {
+        return cost;
+    }
+
+    public void setCost(String cost) {
+        this.cost = cost;
+    }
+
+    public String getTagID() {
+        return tagID;
+    }
+
+    public void setTagID(String tagID) {
+        this.tagID = tagID;
+    }
+
+    public String getAssigned() {
+        return assigned;
+    }
+
+    public void setAssigned(String assigned) {
+        this.assigned = assigned;
+    }
+
+    public String getAssignedToEmpID() {
+        return assignedToEmpID;
+    }
+
+    public void setAssignedToEmpID(String assignedToEmpID) {
+        this.assignedToEmpID = assignedToEmpID;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 }

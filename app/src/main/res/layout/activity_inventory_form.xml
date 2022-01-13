@@ -16,13 +16,12 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-
         <ImageView
             android:id="@+id/imageView4"
-            android:visibility="gone"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="8dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -45,7 +44,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
     <ScrollView
@@ -105,9 +103,9 @@
                             android:layout_width="180dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-
                             android:layout_marginBottom="8dp"
-                            android:text="Material code"
+                            android:checked="true"
+                            android:text="Material Code"
                             android:textSize="20dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/MaterialID"
@@ -132,26 +130,26 @@
                     </RadioGroup>
 
 
-                    <EditText
+                    <AutoCompleteTextView
                         android:id="@+id/SearchKey"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
-
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
                         android:layout_marginStart="16dp"
-
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
                         android:background="@drawable/custom_edittext"
                         android:ems="10"
-                        android:inputType="textPersonName"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/black"
+                        android:inputType="textPostalAddress"
+                        android:textAllCaps="true"
                         app:layout_constraintBottom_toTopOf="@+id/Reading_btn"
-                        app:layout_constraintEnd_toStartOf="@+id/Add_accession"
+                        app:layout_constraintEnd_toStartOf="@+id/Search"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/RadioButtonGroup" />" />
+                        app:layout_constraintTop_toBottomOf="@+id/RadioButtonGroup" />
+
                     <Button
-                        android:id="@+id/Add_accession"
+                        android:id="@+id/Search"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_marginEnd="16dp"
@@ -178,7 +176,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/Accession_no" />
+                        app:layout_constraintTop_toBottomOf="@+id/SearchKey" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -296,7 +294,6 @@
                         app:layout_constraintVertical_bias="0.0" />
 
 
-
                     <TextView
                         android:id="@+id/Found"
                         android:layout_width="0dp"
@@ -362,9 +359,6 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
-
-
-
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,16 @@
 package com.example.assestmanagement;
 
+import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
 import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -18,18 +24,26 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 import com.speedata.libuhf.IUHFService;
 import com.speedata.libuhf.UHFManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class SearchForm extends AppCompatActivity {
@@ -39,10 +53,14 @@ public class SearchForm extends AppCompatActivity {
     Adapter_list adapter_list;
     List<Data_Model_Search> ListSearch;
     CoordinatorLayout coordinatorLayout;
-    IUHFService iuhfService;
+    //    IUHFService iuhfService;
     String result;
     LooperDemo looperDemo;
-    EditText SearchKey;
+    ProgressDialog dialog;
+    AutoCompleteTextView SearchKey;
+    Button SearchData;
+    String paravalues;
+    List<String> suggest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +72,41 @@ public class SearchForm extends AppCompatActivity {
         StartBtn = findViewById(R.id.Reading_btn);
         Retry = findViewById(R.id.Retry);
         New_Btn = findViewById(R.id.New_Button);
-        SearchKey=findViewById(R.id.SearchKEy);
+        SearchKey = findViewById(R.id.SearchKey);
+        SearchData = findViewById(R.id.Search_Data);
         radioGroup.clearCheck();
+        dialog = new ProgressDialog(this);
+
+        //SuggestionList
+        SuggestList();
+        suggest = new ArrayList<>();
+
         coordinatorLayout = findViewById(R.id.coordinator);
-        iuhfService = UHFManager.getUHFService(this);
+//        iuhfService = UHFManager.getUHFService(this);
         looperDemo = new LooperDemo();
-        try {
-            FetchData();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            RadioButton MaterialId = (RadioButton) group.findViewById(R.id.MaterialID);
+            RadioButton MaterialCode = (RadioButton) group.findViewById(R.id.MaterialCode);
+
+            if (checkedId == R.id.MaterialCode) {
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                        (this, android.R.layout.simple_list_item_1, suggest);
+                SearchKey.setAdapter(adapter);
+                String values = String.valueOf(MaterialCode.getText());
+                paravalues = values;
+                Toast.makeText(SearchForm.this, MaterialCode.getText(), Toast.LENGTH_SHORT).show();
+                SearchKey.setHint("Enter Material Code");
+            } else if (checkedId == R.id.MaterialID) {
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                        (this, android.R.layout.simple_list_item_1, suggest);
+                SearchKey.setAdapter(adapter);
+                paravalues = (String) MaterialId.getText();
+                Toast.makeText(SearchForm.this, MaterialId.getText(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
         Handler handler = new Handler(getMainLooper()) {
             @Override
             public void handleMessage(@NonNull Message msg) {
@@ -72,112 +115,162 @@ public class SearchForm extends AppCompatActivity {
             }
         };
 
-        StartBtn.setOnClickListener(v -> {
-            Button b = (Button) v;
-            String buttonText = b.getText().toString();
-            if (buttonText.matches("Start")) {
-                iuhfService.openDev();
-                iuhfService.selectCard(1, "", false);
-                iuhfService.inventoryStart();
-                StartBtn.setText("STOP");
-                iuhfService.setOnInventoryListener(var1 -> {
-
-                    runOnUiThread(() -> Toast.makeText(SearchForm.this, result, Toast.LENGTH_SHORT).show());
-                    result = var1.getEpc();
-                    looperDemo.execute(() -> {
-                        Message message = Message.obtain();
-                        message.obj = result;
-                        handler.sendMessage(message);
-                    });
-//                    if (!tempList.contains(result))
-//                    {
-//                    tempList.add(result);}
-//                    Log.d("UHFService", "Callback");
-                });
-
-            } else {
-                iuhfService.inventoryStop();
-                iuhfService.closeDev();
-                StartBtn.setText("Start");
-            }
-
-
-        });
+//        StartBtn.setOnClickListener(v -> {
+//            Button b = (Button) v;
+//            String buttonText = b.getText().toString();
+//            if (buttonText.matches("Start")) {
+//                iuhfService.openDev();
+//                iuhfService.selectCard(1, "", false);
+//                iuhfService.inventoryStart();
+//                StartBtn.setText("STOP");
+//                iuhfService.setOnInventoryListener(var1 -> {
+//
+//                    runOnUiThread(() -> Toast.makeText(SearchForm.this, result, Toast.LENGTH_SHORT).show());
+//                    result = var1.getEpc();
+//                    looperDemo.execute(() -> {
+//                        Message message = Message.obtain();
+//                        message.obj = result;
+//                        handler.sendMessage(message);
+//                    });
+////                    if (!tempList.contains(result))
+////                    {
+////                    tempList.add(result);}
+////                    Log.d("UHFService", "Callback");
+//                });
+//
+//            } else {
+//                iuhfService.inventoryStop();
+//                iuhfService.closeDev();
+//                StartBtn.setText("Start");
+//            }
+//
+//
+//        });
 
 
         New_Btn.setOnClickListener(v -> Clear());
-        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            RadioButton MaterialId = (RadioButton) group.findViewById(R.id.MaterialID);
-            RadioButton MaterialCode = (RadioButton) group.findViewById(R.id.MaterialCode);
-
-            if (checkedId == R.id.MaterialCode) {
-                Toast.makeText(SearchForm.this, MaterialCode.getText(), Toast.LENGTH_SHORT).show();
-                SearchKey.setHint("Enter Material Code");
-            } else if (checkedId == R.id.MaterialID) {
-                Toast.makeText(SearchForm.this, MaterialId.getText(), Toast.LENGTH_SHORT).show();
-                SearchKey.setHint("Enter Material ID");
-
-            }
-        });
         //Left Swipe Delete
         enableSwipeToDeleteAndUndo();
         //List Intiailized
         ListSearch = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            ListSearch.add(new Data_Model_Search("Tools ", String.valueOf(i)));
-        }
-        adapter_list = new Adapter_list(ListSearch, getApplicationContext());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        recyclerView.setAdapter(adapter_list);
+        SearchData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    String value = String.valueOf(SearchKey.getText());
+
+                    if (value.length() == 0) {
+                        SearchKey.setError("Please Enter Value...");
+                    } else {
+                        dialog.show();
+                        dialog.setMessage(getString(R.string.Dialog_Text));
+                        dialog.setCancelable(false);
+                        FetchData(paravalues, value);
+                        SearchKey.setText("");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+
+    private void SuggestList() {
+        String url = "http://164.52.223.163:4501/api/storematerial/distinctlocation";
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONArray array = new JSONArray(response);
+                    for (int i = 0; i < array.length(); i++) {
+                        System.out.println("Location " + array.getString(i));
+                        suggest.add(array.getString(i));
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        //adding the request to volley
+        Volley.newRequestQueue(this).add(request);
 
     }
 
     //Method for Search Data From Server using Accession Number
-    private void FetchData() throws JSONException {
-        String url = "https://library.poxorfid.com/api/BooksInfo/FetchBookByAccessNo";
+    private void FetchData(String parameter, String value) throws JSONException {
+
+        String url = "http://164.52.223.163:4501/api/storematerial/searchmaterial";
         JSONObject obj = new JSONObject();
-//
-        obj.put("AccessNo", "B1228");
-//        obj.put("AccessNo", accession_no.getText().toString());
+//        obj.put("AccessNo", "B1228");
+        obj.put(parameter, value);
+//        obj.put("Material Code","8411630145" );
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, url, obj,
-                response -> {
-                    try {
-//                        String access_details = response.getString("AccessNo");
-//                        String Title = response.getString("Title");
-//                        String publisher = response.getString("Publisher");
-//                        String Author = response.getString("Author");
-//                        String subject = response.getString("SubjectTitle");
-//                        String language = response.getString("Language");
-//                        String edition = response.getString("Edition");
-//                        String rfid = response.getString("RFIDNo");
 
-//                        tempList.add(rfid);
-//                        list_data_Recyclerview.add(new Data_Model_Search(subject, language, edition, publisher, access_details, Author, Title, rfid));
+
+        final String requestBody = obj.toString();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
+
+            try {
+                JSONArray array = new JSONArray(response);
+//                Toast.makeText(SearchForm.this, response, Toast.LENGTH_SHORT).show();
+//                len = array.length();
+//                total.setText(String.valueOf(len));
+
+dialog.dismiss();
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject object = array.getJSONObject(i);
+                    String Material_Name = object.getString("Material_Name");
+                    String Material_Model = object.getString("Material_ID");
+                    String Material_Department = object.getString("Material_Department");
+                    String Location = object.getString("Location");
+
+                    ListSearch.add(new Data_Model_Search(Material_Name, Material_Model, Location, Material_Department));
 //
-//                        adapter_list = new Adapter_list(list_data_Recyclerview, getApplicationContext());
-//                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-//                        recyclerView.setAdapter(adapter_list);
-//                        if (list_data_Recyclerview.size() > 0) {
-//                            Search_btn.setEnabled(true);
-//                        }
-//                        dialog.dismiss();
-//                           System.out.println("Search Response "+response.toString());
-                        Toast.makeText(SearchForm.this, response+"", Toast.LENGTH_SHORT).show();
-                        Log.e("response Search", response.toString());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                },
-                error -> {
-//                    dialog.dismiss();
-                    System.out.println("Negative Response" + error.getMessage());
-                });
+//                    TempList_Inventory.add(RFIDNO);
+                }
+                adapter_list = new Adapter_list(ListSearch, getApplicationContext());
+                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                recyclerView.setAdapter(adapter_list);
+//                 dialog.dismiss();
+//                    Toast.makeText(Inventory_form.this, name, Toast.LENGTH_LONG).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.i("VOLLEY", response);
+//            dialog.dismiss();
+        }, error -> {
+            Log.e("VOLLEY Negative", error.toString());
+            dialog.dismiss();
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
 
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                    return null;
+                }
+            }
+        };
 
-        queue.add(jsObjRequest);
-
+        queue.add(stringRequest);
     }
+
 
     private void enableSwipeToDeleteAndUndo() {
 

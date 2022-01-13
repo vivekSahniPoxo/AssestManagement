@@ -40,8 +40,11 @@ public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.My
         DataModel_Inventory dataModel_inventory = list.get(position);
 
         //binding data with  components
-        holder.Title.setText(dataModel_inventory.getLocation());
-        holder.publisher.setText(dataModel_inventory.getToolsName());
+        holder.head_subject.setText(dataModel_inventory.getMaterialName());
+        holder.head_title.setText(dataModel_inventory.getMaterialID());
+        holder.publisher.setText(dataModel_inventory.getLocation());
+        holder.language.setText(dataModel_inventory.getMaterialDepartment());
+//        holder.publisher.setText(dataModel_inventory.getToolsName());
 //        holder.Subject.setText(dataModel_inventory.getSubjectTitle());
 //        holder.author.setText(dataModel_inventory.getAuthor());
 //        holder.edition.setText(dataModel_inventory.getEdition());
