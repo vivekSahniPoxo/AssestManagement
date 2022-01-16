@@ -95,12 +95,14 @@ public class SearchForm extends AppCompatActivity {
                 SearchKey.setAdapter(adapter);
                 String values = String.valueOf(MaterialCode.getText());
                 paravalues = values;
+                SearchKey.setEnabled(true);
                 Toast.makeText(SearchForm.this, MaterialCode.getText(), Toast.LENGTH_SHORT).show();
                 SearchKey.setHint("Enter Material Code");
             } else if (checkedId == R.id.MaterialID) {
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>
                         (this, android.R.layout.simple_list_item_1, suggest);
                 SearchKey.setAdapter(adapter);
+                SearchKey.setEnabled(true);
                 paravalues = (String) MaterialId.getText();
                 Toast.makeText(SearchForm.this, MaterialId.getText(), Toast.LENGTH_SHORT).show();
             }
@@ -162,9 +164,9 @@ public class SearchForm extends AppCompatActivity {
                     if (value.length() == 0) {
                         SearchKey.setError("Please Enter Value...");
                     } else {
-                        dialog.show();
-                        dialog.setMessage(getString(R.string.Dialog_Text));
-                        dialog.setCancelable(false);
+//                        dialog.show();
+//                        dialog.setMessage(getString(R.string.Dialog_Text));
+//                        dialog.setCancelable(false);
                         FetchData(paravalues, value);
                         SearchKey.setText("");
                     }
@@ -207,7 +209,12 @@ public class SearchForm extends AppCompatActivity {
 
     //Method for Search Data From Server using Accession Number
     private void FetchData(String parameter, String value) throws JSONException {
-
+        for (int i = 0; i < 20; i++) {
+            ListSearch.add(new Data_Model_Search("Material_Name" + String.valueOf(i), "Material_Model", "Location", "Material_Department"));
+        }
+        adapter_list = new Adapter_list(ListSearch, getApplicationContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setAdapter(adapter_list);
         String url = "http://164.52.223.163:4501/api/storematerial/searchmaterial";
         JSONObject obj = new JSONObject();
 //        obj.put("AccessNo", "B1228");
@@ -226,7 +233,7 @@ public class SearchForm extends AppCompatActivity {
 //                len = array.length();
 //                total.setText(String.valueOf(len));
 
-dialog.dismiss();
+                dialog.dismiss();
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject object = array.getJSONObject(i);
                     String Material_Name = object.getString("Material_Name");
@@ -234,13 +241,13 @@ dialog.dismiss();
                     String Material_Department = object.getString("Material_Department");
                     String Location = object.getString("Location");
 
-                    ListSearch.add(new Data_Model_Search(Material_Name, Material_Model, Location, Material_Department));
+//                    ListSearch.add(new Data_Model_Search(Material_Name, Material_Model, Location, Material_Department));
 //
 //                    TempList_Inventory.add(RFIDNO);
                 }
-                adapter_list = new Adapter_list(ListSearch, getApplicationContext());
-                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                recyclerView.setAdapter(adapter_list);
+//                adapter_list = new Adapter_list(ListSearch, getApplicationContext());
+//                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+//                recyclerView.setAdapter(adapter_list);
 //                 dialog.dismiss();
 //                    Toast.makeText(Inventory_form.this, name, Toast.LENGTH_LONG).show();
             } catch (JSONException e) {

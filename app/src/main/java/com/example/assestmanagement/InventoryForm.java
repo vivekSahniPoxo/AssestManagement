@@ -136,11 +136,13 @@ public class InventoryForm extends AppCompatActivity {
                         (this, android.R.layout.simple_list_item_1, suggest);
                 SearchKey.setAdapter(adapter);
                 Parameter = MaterialCode.getText().toString();
-                Toast.makeText(InventoryForm.this, MaterialCode.getText(), Toast.LENGTH_SHORT).show();
+                SearchKey.setEnabled(true);
+//                Toast.makeText(InventoryForm.this, MaterialCode.getText(), Toast.LENGTH_SHORT).show();
                 SearchKey.setHint("Enter Material Code");
             } else if (checkedId == R.id.Location) {
                 Toast.makeText(InventoryForm.this, Location.getText(), Toast.LENGTH_SHORT).show();
                 SearchKey.setHint("Enter Location");
+                SearchKey.setEnabled(true);
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>
                         (this, android.R.layout.simple_list_item_1, suggest);
                 SearchKey.setAdapter(adapter);
@@ -219,7 +221,7 @@ public class InventoryForm extends AppCompatActivity {
         final String requestBody = obj.toString();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
-
+            ListInventory.clear();
             try {
                 JSONArray array = new JSONArray(response);
                 int len = array.length();
@@ -241,6 +243,8 @@ public class InventoryForm extends AppCompatActivity {
 //
 //                    TempList_Inventory.add(RFIDNO);
                 }
+                recyclerView.setHasFixedSize(true);
+
                 adapter_inventory = new Adapter_Inventory(ListInventory, getApplicationContext());
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 recyclerView.setAdapter(adapter_inventory);

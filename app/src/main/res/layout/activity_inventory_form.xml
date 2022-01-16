@@ -141,6 +141,8 @@
                         android:layout_marginBottom="8dp"
                         android:background="@drawable/custom_edittext"
                         android:ems="10"
+                        android:enabled="false"
+                        android:paddingLeft="10dp"
                         android:inputType="textPostalAddress"
                         android:textAllCaps="true"
                         app:layout_constraintBottom_toTopOf="@+id/Reading_btn"

@@ -1,14 +1,20 @@
 package com.example.assestmanagement;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +40,7 @@ public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.My
         return new MyViewholder(v);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onBindViewHolder(@NonNull MyViewholder holder, int position) {
         //Initialize model
@@ -44,6 +51,47 @@ public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.My
         holder.head_title.setText(dataModel_inventory.getMaterialID());
         holder.publisher.setText(dataModel_inventory.getLocation());
         holder.language.setText(dataModel_inventory.getMaterialDepartment());
+        holder.checkBox.setSelected(dataModel_inventory.getSelected());
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    dataModel_inventory.setSelected(true);
+                } else {
+                    dataModel_inventory.setSelected(false);
+                }
+            }
+        });
+        holder.checkBox.setChecked(dataModel_inventory.getSelected());
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
+                View dailogbox = LayoutInflater.from(v.getRootView().getContext()).inflate(R.layout.customdailog, null);
+                TextView t1 = dailogbox.findViewById(R.id.t1);
+                TextView t2 = dailogbox.findViewById(R.id.t2);
+                TextView t3 = dailogbox.findViewById(R.id.t3);
+                TextView t4 = dailogbox.findViewById(R.id.t4);
+                TextView t5 = dailogbox.findViewById(R.id.t5);
+                TextView t6 = dailogbox.findViewById(R.id.t6);
+                TextView t7 = dailogbox.findViewById(R.id.t7);
+
+
+                t1.setText(dataModel_inventory.getMaterialName());
+                t2.setText(dataModel_inventory.getMaterialModel());
+                t3.setText(dataModel_inventory.getLocation());
+                t4.setText(dataModel_inventory.getMaterialDepartment());
+                t5.setText(dataModel_inventory.getAssignedToEmpID());
+                t6.setText(dataModel_inventory.getCost());
+                t7.setText(dataModel_inventory.getTagID());
+
+                builder.setView(dailogbox);
+                builder.setCancelable(true);
+                builder.show();
+
+            }
+        });
+
 //        holder.publisher.setText(dataModel_inventory.getToolsName());
 //        holder.Subject.setText(dataModel_inventory.getSubjectTitle());
 //        holder.author.setText(dataModel_inventory.getAuthor());
@@ -95,7 +143,7 @@ public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.My
 //
 ////                holder.cardView.setVisibility(View.GONE);
 //            });
-            //            holder.Title_Details.setTextColor(Color.parseColor("#FFFFFF"));
+        //            holder.Title_Details.setTextColor(Color.parseColor("#FFFFFF"));
 //            holder.Author_Details.setTextColor(Color.parseColor("#FFFFFF"));
 //            holder.RFid_details.setTextColor(Color.parseColor("#FFFFFF"));
 //            holder.Access_detail.setTextColor(Color.parseColor("#FFFFFF"));
@@ -122,9 +170,13 @@ public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.My
         LinearLayout list_layout;
         CardView cardView, card_details;
         ConstraintLayout ListLayout;
+        CheckBox checkBox;
 
         public MyViewholder(@NonNull View itemView) {
             super(itemView);
+            //Binding components
+            checkBox = itemView.findViewById(R.id.checkItem);
+
             ListLayout = itemView.findViewById(R.id.LayoutList);
             Subject = itemView.findViewById(R.id.Subject);
             Title = itemView.findViewById(R.id.Booktitle);

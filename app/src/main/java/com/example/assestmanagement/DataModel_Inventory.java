@@ -16,12 +16,21 @@ public class DataModel_Inventory {
     private String assigned;
     private String assignedToEmpID;
     private String status;
+    private boolean Selected;
 
     public DataModel_Inventory(String materialName, String materialID , String location, String materialDepartment) {
         this.materialName = materialName;
         this.materialID = materialID;
         this.location = location;
         this.materialDepartment = materialDepartment;
+    }
+
+    public boolean getSelected() {
+        return Selected;
+    }
+
+    public void setSelected(boolean selected) {
+        Selected = selected;
     }
 
     public String getId() {

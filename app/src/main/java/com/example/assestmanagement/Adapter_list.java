@@ -1,29 +1,39 @@
 package com.example.assestmanagement;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import java.util.List;
 
 public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder> {
     List<Data_Model_Search> list;
     Context context;
+    Dialog dialog;
 //    List<String> tempList;
 
     public Adapter_list(List<Data_Model_Search> list, Context context) {
         this.list = list;
         this.context = context;
-
 
     }
 
@@ -46,6 +56,47 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
         holder.head_title.setText(model_search.getMaterialID());
         holder.publisher.setText(model_search.getLocation());
         holder.language.setText(model_search.getMaterialDepartment());
+        holder.checkBox.setSelected(model_search.getSelected());
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    model_search.setSelected(true);
+                }else {
+                    model_search.setSelected(false);
+                }
+            }
+        });
+        holder.checkBox.setChecked(model_search.getSelected());
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder =new AlertDialog.Builder(v.getRootView().getContext());
+                View dailogbox =LayoutInflater.from(v.getRootView().getContext()).inflate(R.layout.customdailog,null);
+                TextView t1 = dailogbox.findViewById(R.id.t1);
+                TextView t2 = dailogbox.findViewById(R.id.t2);
+                TextView t3 = dailogbox.findViewById(R.id.t3);
+                TextView t4 = dailogbox.findViewById(R.id.t4);
+                TextView t5 = dailogbox.findViewById(R.id.t5);
+                TextView t6 = dailogbox.findViewById(R.id.t6);
+                TextView t7 = dailogbox.findViewById(R.id.t7);
+
+
+                t1.setText(model_search.getMaterialName());
+                t2.setText(model_search.getMaterialModel());
+                t3.setText(model_search.getLocation());
+                t4.setText(model_search.getMaterialDepartment());
+                t5.setText(model_search.getAssignedToEmpID());
+                t6.setText(model_search.getCost());
+                t7.setText(model_search.getTagID());
+
+                builder.setView(dailogbox);
+                builder.setCancelable(true);
+                builder.show();
+
+               }
+        });
 //        holder.
 //        holder.Subject.setText(model_search.getSubjectTitle());
 //        holder.author.setText(model_search.getAuthor());
@@ -115,10 +166,12 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
         LinearLayout list_layout;
         CardView cardView, card_details;
         ConstraintLayout ListLayout;
+        CheckBox checkBox;
 
         public myviewholder(@NonNull View itemView) {
             super(itemView);
             //Binding components
+            checkBox=itemView.findViewById(R.id.checkItem);
             ListLayout = itemView.findViewById(R.id.LayoutList);
             Subject = itemView.findViewById(R.id.Subject);
             expand = itemView.findViewById(R.id.expand);
@@ -178,4 +231,5 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
 //
 //        }
 //    }
+
 }

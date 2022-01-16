@@ -131,9 +131,10 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
                         android:background="@drawable/custom_edittext"
                         android:ems="10"
+                        android:enabled="false"
+                        android:paddingLeft="10dp"
                         android:inputType="textPostalAddress"
                         android:textAllCaps="true"
                         app:layout_constraintBottom_toTopOf="@+id/Reading_btn"
@@ -170,7 +171,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/SearchKEy" />
+                        app:layout_constraintTop_toBottomOf="@+id/SearchKey" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
