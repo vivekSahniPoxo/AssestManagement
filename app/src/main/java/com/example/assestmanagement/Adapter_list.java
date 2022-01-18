@@ -60,9 +60,9 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     model_search.setSelected(true);
-                }else {
+                } else {
                     model_search.setSelected(false);
                 }
             }
@@ -72,8 +72,8 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder =new AlertDialog.Builder(v.getRootView().getContext());
-                View dailogbox =LayoutInflater.from(v.getRootView().getContext()).inflate(R.layout.customdailog,null);
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
+                View dailogbox = LayoutInflater.from(v.getRootView().getContext()).inflate(R.layout.customdailog, null);
                 TextView t1 = dailogbox.findViewById(R.id.t1);
                 TextView t2 = dailogbox.findViewById(R.id.t2);
                 TextView t3 = dailogbox.findViewById(R.id.t3);
@@ -95,7 +95,7 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
                 builder.setCancelable(true);
                 builder.show();
 
-               }
+            }
         });
 //        holder.
 //        holder.Subject.setText(model_search.getSubjectTitle());
@@ -126,32 +126,21 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
 //        });
 
 //Change color if data found
-//        if (model_search.getColor() == "Green") {
-////            holder.cardView.setCardBackgroundColor(Color.rgb(46, 139, 87));
-//            holder.ListLayout.setBackgroundColor(Color.rgb(46, 139, 87));
-//            holder.head_subject.setTextColor(Color.parseColor("#FFFFFF"));
-//            holder.head_title.setTextColor(Color.parseColor("#FFFFFF"));
-//            holder.publisher.setTextColor(Color.parseColor("#FFFFFF"));
-//            holder.language.setTextColor(Color.parseColor("#FFFFFF"));
-//
-////            holder.expand.setOnClickListener(new View.OnClickListener() {
-////                @Override
-////                public void onClick(View v) {
-////                    holder.card_details.setVisibility(View.VISIBLE);
-////                    holder.expand.setVisibility(View.GONE);
-////                    holder.minimize.setVisibility(View.VISIBLE);
-////
-////
-//////                holder.cardView.setVisibility(View.GONE);
-////                }
-////            });
-//        } else {
-//            holder.ListLayout.setBackgroundColor(Color.parseColor("#C6CFCF"));
-//            holder.head_subject.setTextColor(Color.parseColor("#000000"));
-//            holder.head_title.setTextColor(Color.parseColor("#000000"));
-//            holder.publisher.setTextColor(Color.parseColor("#000000"));
-//            holder.language.setTextColor(Color.parseColor("#000000"));
-//        }
+        if (model_search.getColor() == "Green") {
+//            holder.cardView.setCardBackgroundColor(Color.rgb(46, 139, 87));
+            holder.ListLayout.setBackgroundColor(Color.rgb(46, 139, 87));
+            holder.head_subject.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.head_title.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.publisher.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.language.setTextColor(Color.parseColor("#FFFFFF"));
+
+        } else {
+            holder.ListLayout.setBackgroundColor(Color.parseColor("#C6CFCF"));
+            holder.head_subject.setTextColor(Color.parseColor("#000000"));
+            holder.head_title.setTextColor(Color.parseColor("#000000"));
+            holder.publisher.setTextColor(Color.parseColor("#000000"));
+            holder.language.setTextColor(Color.parseColor("#000000"));
+        }
 
     }
 
@@ -171,7 +160,7 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
         public myviewholder(@NonNull View itemView) {
             super(itemView);
             //Binding components
-            checkBox=itemView.findViewById(R.id.checkItem);
+            checkBox = itemView.findViewById(R.id.checkItem);
             ListLayout = itemView.findViewById(R.id.LayoutList);
             Subject = itemView.findViewById(R.id.Subject);
             expand = itemView.findViewById(R.id.expand);
@@ -207,21 +196,21 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
     }
 
     //Method for Search
-//    public void getFilter(@NonNull Object search_value) {
-//        for (Data_Model_Search row : list) {
-//
-//            if (row.getrFIDNo().equals(search_value)) {
-//                row.setColor("Green");
-//                notifyDataSetChanged();
-//                break;
-//            }
-////                else {
-////                    Toast.makeText(context.getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT).show();
-////                    break;
-////                }
-//        }
-//
-//    }
+    public void getFilter(@NonNull Object search_value) {
+        for (Data_Model_Search row : list) {
+
+            if (row.getTagID().equals(search_value)) {
+                row.setColor("Green");
+                notifyDataSetChanged();
+                break;
+            }
+//                else {
+//                    Toast.makeText(context.getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT).show();
+//                    break;
+//                }
+        }
+
+    }
 
 //    public void RetrySearch() {
 //        for (Data_Model_Search row : list) {

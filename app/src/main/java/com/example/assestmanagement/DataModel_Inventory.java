@@ -17,12 +17,22 @@ public class DataModel_Inventory {
     private String assignedToEmpID;
     private String status;
     private boolean Selected;
+    String Color;
 
-    public DataModel_Inventory(String materialName, String materialID , String location, String materialDepartment) {
+    public DataModel_Inventory(String materialName, String materialID, String location, String materialDepartment, String tagId) {
         this.materialName = materialName;
         this.materialID = materialID;
         this.location = location;
         this.materialDepartment = materialDepartment;
+        this.tagID=tagId;
+    }
+
+    public String getColor() {
+        return Color;
+    }
+
+    public void setColor(String color) {
+        Color = color;
     }
 
     public boolean getSelected() {

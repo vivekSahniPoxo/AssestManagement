@@ -172,6 +172,7 @@
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="8dp"
                         android:background="@drawable/custom_btn"
+                        android:enabled="false"
                         android:text="Start"
                         android:textColor="@color/white"
                         app:layout_constraintBottom_toBottomOf="parent"

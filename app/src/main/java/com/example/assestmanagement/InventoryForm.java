@@ -53,12 +53,15 @@ public class InventoryForm extends AppCompatActivity {
     Adapter_Inventory adapter_inventory;
     ProgressDialog dialog;
     List<DataModel_Inventory> ListInventory;
-    //    IUHFService iuhfService;
+    IUHFService iuhfService;
+    String result;
     TextView Total, Found, NotFound;
     LooperDemo looperDemo;
     AutoCompleteTextView SearchKey;
     String Parameter;
     List<String> suggest;
+    int counter = 0, len, not_founded;
+    List<String> TempList_Inventory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +80,22 @@ public class InventoryForm extends AppCompatActivity {
         Searchbtn = findViewById(R.id.Search);
         radioGroup.clearCheck();
         dialog = new ProgressDialog(this);
-
-//        iuhfService = UHFManager.getUHFService(this);
+        TempList_Inventory = new ArrayList<>();
+        iuhfService = UHFManager.getUHFService(this);
 //        iuhfService.setAntennaPower(20);
         looperDemo = new LooperDemo();
         Handler handler = new Handler(getMainLooper()) {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
+                int fnd = adapter_inventory.getFilter(msg.obj);
+//                counter = counter+fnd;
+//                iuhfService.inventoryStop();
+//                iuhfService.closeDev();
+                not_founded = len - fnd;
+                Total.setText(String.valueOf(len));
+                Found.setText(String.valueOf(fnd));
+                NotFound.setText(String.valueOf(not_founded));
             }
         };
         //SuggestionList
@@ -94,38 +105,38 @@ public class InventoryForm extends AppCompatActivity {
         //ListenerButton
         NewBtn.setOnClickListener(v -> Clear());
         Back.setOnClickListener(v -> startActivity(new Intent(InventoryForm.this, MainActivity.class)));
-//        StartReading.setOnClickListener(v -> {
-//            Button b = (Button) v;
-//            String buttonText = b.getText().toString();
-//            if (buttonText.matches("Start")) {
-//                iuhfService.openDev();
-//                iuhfService.selectCard(1, "", false);
-//                iuhfService.inventoryStart();
-//                StartReading.setText("STOP");
-//                iuhfService.setOnInventoryListener(var1 -> {
-//
-//                    runOnUiThread(() -> Toast.makeText(InventoryForm.this, result, Toast.LENGTH_SHORT).show());
-//                    result = var1.getEpc();
-//                    looperDemo.execute(() -> {
-//                        Message message = Message.obtain();
-//                        message.obj = result;
-//                        handler.sendMessage(message);
-//                    });
-////                    if (!tempList.contains(result))
-////                    {
-////                    tempList.add(result);}
-////                    Log.d("UHFService", "Callback");
-//                });
-//
-//            } else {
-//                iuhfService.inventoryStop();
-//                iuhfService.closeDev();
-//                StartReading.setText("Start");
-//            }
-//
-//        });
+        StartReading.setOnClickListener(v -> {
+            Button b = (Button) v;
+            String buttonText = b.getText().toString();
+            if (buttonText.matches("Start")) {
+                iuhfService.openDev();
+                iuhfService.selectCard(1, "", false);
+                iuhfService.inventoryStart();
+                StartReading.setText("STOP");
+                iuhfService.setOnInventoryListener(var1 -> {
 
-        //Left Swipe Delete Function
+//                    runOnUiThread(() -> Toast.makeText(InventoryForm.this, result, Toast.LENGTH_SHORT).show());
+                    result = var1.getEpc();
+                    looperDemo.execute(() -> {
+                        Message message = Message.obtain();
+                        message.obj = result;
+                        handler.sendMessage(message);
+                    });
+//                    if (!tempList.contains(result))
+//                    {
+//                    tempList.add(result);}
+//                    Log.d("UHFService", "Callback");
+                });
+
+            } else {
+                iuhfService.inventoryStop();
+                iuhfService.closeDev();
+                StartReading.setText("Start");
+            }
+
+        });
+
+//        Left Swipe Delete Function
         enableSwipeToDeleteAndUndo();
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             RadioButton Location = (RadioButton) group.findViewById(R.id.Location);
@@ -140,15 +151,13 @@ public class InventoryForm extends AppCompatActivity {
 //                Toast.makeText(InventoryForm.this, MaterialCode.getText(), Toast.LENGTH_SHORT).show();
                 SearchKey.setHint("Enter Material Code");
             } else if (checkedId == R.id.Location) {
-                Toast.makeText(InventoryForm.this, Location.getText(), Toast.LENGTH_SHORT).show();
+
                 SearchKey.setHint("Enter Location");
                 SearchKey.setEnabled(true);
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>
                         (this, android.R.layout.simple_list_item_1, suggest);
                 SearchKey.setAdapter(adapter);
                 Parameter = Location.getText().toString();
-
-
             }
         });
 
@@ -222,33 +231,32 @@ public class InventoryForm extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
             ListInventory.clear();
+
             try {
                 JSONArray array = new JSONArray(response);
-                int len = array.length();
-                Total.setText("0");
+                len = array.length();
                 Total.setText(String.valueOf(len));
-//                Toast.makeText(SearchForm.this, response, Toast.LENGTH_SHORT).show();
-//                len = array.length();
-//                total.setText(String.valueOf(len));
-
-
+                NotFound.setText(String.valueOf(len));
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject object = array.getJSONObject(i);
                     String Material_Name = object.getString("Material_Name");
                     String Material_Model = object.getString("Material_ID");
                     String Material_Department = object.getString("Material_Department");
                     String Location = object.getString("Location");
+                    String TagId = object.getString("TagID");
 
-                    ListInventory.add(new DataModel_Inventory(Material_Name, Material_Model, Location, Material_Department));
+                    ListInventory.add(new DataModel_Inventory(Material_Name, Material_Model, Location, Material_Department,TagId));
 //
-//                    TempList_Inventory.add(RFIDNO);
+                    TempList_Inventory.add(TagId);
                 }
+                StartReading.setEnabled(true);
                 recyclerView.setHasFixedSize(true);
-
-                adapter_inventory = new Adapter_Inventory(ListInventory, getApplicationContext());
+                adapter_inventory = new Adapter_Inventory(ListInventory, getApplicationContext(), TempList_Inventory);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 recyclerView.setAdapter(adapter_inventory);
-//                                 dialog.dismiss();
+                dialog.dismiss();
+
+
 //                    Toast.makeText(Inventory_form.this, name, Toast.LENGTH_LONG).show();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -258,6 +266,11 @@ public class InventoryForm extends AppCompatActivity {
         }, error -> {
             Log.e("VOLLEY Negative", error.toString());
             dialog.dismiss();
+            if (error.networkResponse.statusCode == 404) {
+                Toast.makeText(InventoryForm.this, "No Result Found", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(InventoryForm.this, "Network Error", Toast.LENGTH_SHORT).show();
+            }
         }) {
             @Override
             public String getBodyContentType() {

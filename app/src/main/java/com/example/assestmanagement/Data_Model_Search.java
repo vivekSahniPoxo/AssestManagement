@@ -17,12 +17,21 @@ public class Data_Model_Search {
     private String assignedToEmpID;
     private String status;
     private boolean Selected;
-
-    public Data_Model_Search(String materialName, String materialID , String location, String materialDepartment) {
+String Color;
+    public Data_Model_Search(String materialName, String materialID, String location, String materialDepartment, String tagId) {
         this.materialName = materialName;
         this.materialID = materialID;
         this.location = location;
         this.materialDepartment = materialDepartment;
+        this.tagID=tagId;
+    }
+
+    public String getColor() {
+        return Color;
+    }
+
+    public void setColor(String color) {
+        Color = color;
     }
 
     public boolean getSelected() {

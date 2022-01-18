@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -53,7 +54,7 @@ public class SearchForm extends AppCompatActivity {
     Adapter_list adapter_list;
     List<Data_Model_Search> ListSearch;
     CoordinatorLayout coordinatorLayout;
-    //    IUHFService iuhfService;
+    IUHFService iuhfService;
     String result;
     LooperDemo looperDemo;
     ProgressDialog dialog;
@@ -61,6 +62,7 @@ public class SearchForm extends AppCompatActivity {
     Button SearchData;
     String paravalues;
     List<String> suggest;
+    private int mStatusCode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +84,7 @@ public class SearchForm extends AppCompatActivity {
         suggest = new ArrayList<>();
 
         coordinatorLayout = findViewById(R.id.coordinator);
-//        iuhfService = UHFManager.getUHFService(this);
+        iuhfService = UHFManager.getUHFService(this);
         looperDemo = new LooperDemo();
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             RadioButton MaterialId = (RadioButton) group.findViewById(R.id.MaterialID);
@@ -96,7 +98,7 @@ public class SearchForm extends AppCompatActivity {
                 String values = String.valueOf(MaterialCode.getText());
                 paravalues = values;
                 SearchKey.setEnabled(true);
-                Toast.makeText(SearchForm.this, MaterialCode.getText(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SearchForm.this, MaterialCode.getText(), Toast.LENGTH_SHORT).show();
                 SearchKey.setHint("Enter Material Code");
             } else if (checkedId == R.id.MaterialID) {
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>
@@ -104,7 +106,7 @@ public class SearchForm extends AppCompatActivity {
                 SearchKey.setAdapter(adapter);
                 SearchKey.setEnabled(true);
                 paravalues = (String) MaterialId.getText();
-                Toast.makeText(SearchForm.this, MaterialId.getText(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SearchForm.this, MaterialId.getText(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -113,41 +115,40 @@ public class SearchForm extends AppCompatActivity {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
-
+                adapter_list.getFilter(msg.obj);
             }
         };
 
-//        StartBtn.setOnClickListener(v -> {
-//            Button b = (Button) v;
-//            String buttonText = b.getText().toString();
-//            if (buttonText.matches("Start")) {
-//                iuhfService.openDev();
-//                iuhfService.selectCard(1, "", false);
-//                iuhfService.inventoryStart();
-//                StartBtn.setText("STOP");
-//                iuhfService.setOnInventoryListener(var1 -> {
-//
-//                    runOnUiThread(() -> Toast.makeText(SearchForm.this, result, Toast.LENGTH_SHORT).show());
-//                    result = var1.getEpc();
-//                    looperDemo.execute(() -> {
-//                        Message message = Message.obtain();
-//                        message.obj = result;
-//                        handler.sendMessage(message);
-//                    });
-////                    if (!tempList.contains(result))
-////                    {
-////                    tempList.add(result);}
-////                    Log.d("UHFService", "Callback");
-//                });
-//
-//            } else {
-//                iuhfService.inventoryStop();
-//                iuhfService.closeDev();
-//                StartBtn.setText("Start");
-//            }
-//
-//
-//        });
+        StartBtn.setOnClickListener(v -> {
+            Button b = (Button) v;
+            String buttonText = b.getText().toString();
+            if (buttonText.matches("Start")) {
+                iuhfService.openDev();
+                iuhfService.selectCard(1, "", false);
+                iuhfService.inventoryStart();
+                StartBtn.setText("STOP");
+                iuhfService.setOnInventoryListener(var1 -> {
+
+                    result = var1.getEpc();
+                    looperDemo.execute(() -> {
+                        Message message = Message.obtain();
+                        message.obj = result;
+                        handler.sendMessage(message);
+                    });
+//                    if (!tempList.contains(result))
+//                    {
+//                    tempList.add(result);}
+//                    Log.d("UHFService", "Callback");
+                });
+
+            } else {
+                iuhfService.inventoryStop();
+                iuhfService.closeDev();
+                StartBtn.setText("Start");
+            }
+
+
+        });
 
 
         New_Btn.setOnClickListener(v -> Clear());
@@ -164,9 +165,9 @@ public class SearchForm extends AppCompatActivity {
                     if (value.length() == 0) {
                         SearchKey.setError("Please Enter Value...");
                     } else {
-//                        dialog.show();
-//                        dialog.setMessage(getString(R.string.Dialog_Text));
-//                        dialog.setCancelable(false);
+                        dialog.show();
+                        dialog.setMessage(getString(R.string.Dialog_Text));
+                        dialog.setCancelable(false);
                         FetchData(paravalues, value);
                         SearchKey.setText("");
                     }
@@ -209,12 +210,7 @@ public class SearchForm extends AppCompatActivity {
 
     //Method for Search Data From Server using Accession Number
     private void FetchData(String parameter, String value) throws JSONException {
-        for (int i = 0; i < 20; i++) {
-            ListSearch.add(new Data_Model_Search("Material_Name" + String.valueOf(i), "Material_Model", "Location", "Material_Department"));
-        }
-        adapter_list = new Adapter_list(ListSearch, getApplicationContext());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        recyclerView.setAdapter(adapter_list);
+
         String url = "http://164.52.223.163:4501/api/storematerial/searchmaterial";
         JSONObject obj = new JSONObject();
 //        obj.put("AccessNo", "B1228");
@@ -228,27 +224,29 @@ public class SearchForm extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
 
             try {
-                JSONArray array = new JSONArray(response);
-//                Toast.makeText(SearchForm.this, response, Toast.LENGTH_SHORT).show();
-//                len = array.length();
-//                total.setText(String.valueOf(len));
 
+                JSONArray array = new JSONArray(response);
                 dialog.dismiss();
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject object = array.getJSONObject(i);
+
                     String Material_Name = object.getString("Material_Name");
                     String Material_Model = object.getString("Material_ID");
                     String Material_Department = object.getString("Material_Department");
                     String Location = object.getString("Location");
+                    String TagId= object.getString("TagID");
 
-//                    ListSearch.add(new Data_Model_Search(Material_Name, Material_Model, Location, Material_Department));
+                    ListSearch.add(new Data_Model_Search(Material_Name, Material_Model, Location, Material_Department,TagId));
 //
 //                    TempList_Inventory.add(RFIDNO);
                 }
-//                adapter_list = new Adapter_list(ListSearch, getApplicationContext());
-//                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-//                recyclerView.setAdapter(adapter_list);
-//                 dialog.dismiss();
+                adapter_list = new Adapter_list(ListSearch, getApplicationContext());
+                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                recyclerView.setAdapter(adapter_list);
+                adapter_list.notifyDataSetChanged();
+StartBtn.setEnabled(true);
+
+                dialog.dismiss();
 //                    Toast.makeText(Inventory_form.this, name, Toast.LENGTH_LONG).show();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -256,7 +254,22 @@ public class SearchForm extends AppCompatActivity {
             Log.i("VOLLEY", response);
 //            dialog.dismiss();
         }, error -> {
-            Log.e("VOLLEY Negative", error.toString());
+            Log.e("VOLLEY Negative", String.valueOf(error.networkResponse.statusCode));
+            try {
+                if (error.networkResponse.statusCode == 404) {
+                    Toast.makeText(SearchForm.this, "No Result Found", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SearchForm.this, "Network Error", Toast.LENGTH_SHORT).show();
+
+                }
+                String responseBody = new String(error.networkResponse.data, "utf-8");
+                JSONObject data = new JSONObject(responseBody);
+
+                String message = data.getString("message");
+//                Toast.makeText(getApplicationContext(),message, Toast.LENGTH_LONG).show();
+            } catch (JSONException e) {
+            } catch (UnsupportedEncodingException errorr) {
+            }
             dialog.dismiss();
         }) {
             @Override
@@ -272,6 +285,13 @@ public class SearchForm extends AppCompatActivity {
                     VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
                     return null;
                 }
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                mStatusCode = response.statusCode;
+
+                return super.parseNetworkResponse(response);
             }
         };
 
