@@ -18,6 +18,7 @@ public class DataModel_Inventory {
     private String status;
     private boolean Selected;
     String Color;
+String CheckList="False";
 
     public DataModel_Inventory(String materialName, String materialID, String location, String materialDepartment, String tagId) {
         this.materialName = materialName;
@@ -25,6 +26,14 @@ public class DataModel_Inventory {
         this.location = location;
         this.materialDepartment = materialDepartment;
         this.tagID=tagId;
+    }
+
+    public String getCheckList() {
+        return CheckList;
+    }
+
+    public void setCheckList(String checkList) {
+        CheckList = checkList;
     }
 
     public String getColor() {

@@ -28,7 +28,7 @@ import java.util.List;
 public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder> {
     List<Data_Model_Search> list;
     Context context;
-    Dialog dialog;
+
 //    List<String> tempList;
 
     public Adapter_list(List<Data_Model_Search> list, Context context) {
@@ -62,6 +62,7 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     model_search.setSelected(true);
+                    model_search.setCheckList("True");
                 } else {
                     model_search.setSelected(false);
                 }
@@ -198,11 +199,13 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
     //Method for Search
     public void getFilter(@NonNull Object search_value) {
         for (Data_Model_Search row : list) {
-
-            if (row.getTagID().equals(search_value)) {
-                row.setColor("Green");
+            if (row.getCheckList().equals("True")){
+                if (row.getTagID().equals(search_value)) {
+                    row.setColor("Green");
+                    notifyDataSetChanged();
+                    break;
+                }
                 notifyDataSetChanged();
-                break;
             }
 //                else {
 //                    Toast.makeText(context.getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT).show();

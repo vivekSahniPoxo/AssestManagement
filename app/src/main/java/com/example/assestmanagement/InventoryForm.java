@@ -245,7 +245,7 @@ public class InventoryForm extends AppCompatActivity {
                     String Location = object.getString("Location");
                     String TagId = object.getString("TagID");
 
-                    ListInventory.add(new DataModel_Inventory(Material_Name, Material_Model, Location, Material_Department,TagId));
+                    ListInventory.add(new DataModel_Inventory(Material_Name, Material_Model, Location, Material_Department, TagId));
 //
                     TempList_Inventory.add(TagId);
                 }
@@ -268,8 +268,11 @@ public class InventoryForm extends AppCompatActivity {
             dialog.dismiss();
             if (error.networkResponse.statusCode == 404) {
                 Toast.makeText(InventoryForm.this, "No Result Found", Toast.LENGTH_SHORT).show();
+            } else if (error.networkResponse.statusCode == 400) {
+                Toast.makeText(InventoryForm.this, "Bad Request", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(InventoryForm.this, "Network Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(InventoryForm.this, "Unable to process the request", Toast.LENGTH_SHORT).show();
+
             }
         }) {
             @Override

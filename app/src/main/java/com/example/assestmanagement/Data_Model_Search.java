@@ -17,13 +17,23 @@ public class Data_Model_Search {
     private String assignedToEmpID;
     private String status;
     private boolean Selected;
-String Color;
+    String Color;
+    String CheckList = "False";
+
     public Data_Model_Search(String materialName, String materialID, String location, String materialDepartment, String tagId) {
         this.materialName = materialName;
         this.materialID = materialID;
         this.location = location;
         this.materialDepartment = materialDepartment;
-        this.tagID=tagId;
+        this.tagID = tagId;
+    }
+
+    public String getCheckList() {
+        return CheckList;
+    }
+
+    public void setCheckList(String checkList) {
+        CheckList = checkList;
     }
 
     public String getColor() {

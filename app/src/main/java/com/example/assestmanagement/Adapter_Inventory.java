@@ -24,7 +24,7 @@ import java.util.List;
 public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.MyViewholder> {
     List<DataModel_Inventory> list;
     List<String> templist;
-    List<DataModel_Inventory> CheckList;
+
 
     Context c;
 //    SharedPreferences pref;
@@ -33,7 +33,7 @@ public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.My
         this.list = list;
         this.c = c;
         this.templist = tempList_Inventory;
-        this.CheckList=list;
+
     }
 
     @NonNull
@@ -60,6 +60,8 @@ public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.My
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     dataModel_inventory.setSelected(true);
+                    dataModel_inventory.setCheckList("True");
+
                 } else {
                     dataModel_inventory.setSelected(false);
                 }
@@ -110,8 +112,6 @@ public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.My
             holder.head_title.setTextColor(Color.parseColor("#000000"));
             holder.publisher.setTextColor(Color.parseColor("#000000"));
             holder.language.setTextColor(Color.parseColor("#000000"));
-
-
         }
     }
 
@@ -173,13 +173,15 @@ public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.My
     public int getFilter(Object search_value) {
         if (templist.contains(search_value)) {
             for (DataModel_Inventory row : list) {
-
-                if (row.getTagID().equals(search_value)) {
-                    row.setColor("Green");
-                    row.setStatus("True");
-                    bookFooundCount = bookFooundCount + 1;
+                if (row.getCheckList().equals("True")) {
+                    if (row.getTagID().equals(search_value)) {
+                        row.setColor("Green");
+                        row.setStatus("True");
+                        bookFooundCount = bookFooundCount + 1;
+                        notifyDataSetChanged();
+                        break;
+                    }
                     notifyDataSetChanged();
-                    break;
                 }
             }
             templist.remove(search_value);

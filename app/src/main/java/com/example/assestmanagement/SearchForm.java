@@ -255,21 +255,16 @@ StartBtn.setEnabled(true);
 //            dialog.dismiss();
         }, error -> {
             Log.e("VOLLEY Negative", String.valueOf(error.networkResponse.statusCode));
-            try {
+
                 if (error.networkResponse.statusCode == 404) {
                     Toast.makeText(SearchForm.this, "No Result Found", Toast.LENGTH_SHORT).show();
+                } else if (error.networkResponse.statusCode == 400) {
+                    Toast.makeText(SearchForm.this, "Bad Request", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(SearchForm.this, "Network Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SearchForm.this, "Unable to process the request", Toast.LENGTH_SHORT).show();
 
                 }
-                String responseBody = new String(error.networkResponse.data, "utf-8");
-                JSONObject data = new JSONObject(responseBody);
 
-                String message = data.getString("message");
-//                Toast.makeText(getApplicationContext(),message, Toast.LENGTH_LONG).show();
-            } catch (JSONException e) {
-            } catch (UnsupportedEncodingException errorr) {
-            }
             dialog.dismiss();
         }) {
             @Override
