@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -82,31 +81,27 @@ public class InventoryForm extends AppCompatActivity {
         Searchbtn = findViewById(R.id.Search);
 
 
-        SelectAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView b = (TextView) v;
-                String buttonText = b.getText().toString();
-                if (buttonText.matches("Select All")) {
-                    for (DataModel_Inventory model : ListInventory) {
-                        model.setCheckList("True");
-                    }
-                    adapter_inventory.notifyDataSetChanged();
-                    SelectAll.setText("DeSelect All");
-                } else {
-                    for (DataModel_Inventory model : ListInventory) {
-                        model.setCheckList("false");
-                    }
-                    adapter_inventory.notifyDataSetChanged();
-                    SelectAll.setText("Select All");
-
+        SelectAll.setOnClickListener(v -> {
+            TextView b = (TextView) v;
+            String buttonText = b.getText().toString();
+            if (buttonText.matches("Select All")) {
+                for (DataModel_Inventory model : ListInventory) {
+                    model.setCheckList("True");
                 }
+                adapter_inventory.notifyDataSetChanged();
+                SelectAll.setText("DeSelect All");
+            } else {
+                for (DataModel_Inventory model : ListInventory) {
+                    model.setCheckList("false");
+                }
+                adapter_inventory.notifyDataSetChanged();
+                SelectAll.setText("Select All");
+
+            }
 //                for (DataModel_Inventory model : ListInventory) {
 //                    model.setCheckList("True");
 //                }
 //                adapter_inventory.notifyDataSetChanged();
-            }
-
         });
 
 
@@ -175,9 +170,9 @@ public class InventoryForm extends AppCompatActivity {
             RadioButton MaterialCode = (RadioButton) group.findViewById(R.id.MaterialCode);
 
             if (checkedId == R.id.MaterialCode) {
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                        (this, android.R.layout.simple_list_item_1, suggest);
-                SearchKey.setAdapter(adapter);
+//                ArrayAdapter<String> adapter = new ArrayAdapter<String>
+//                        (this, android.R.layout.simple_list_item_1, suggest);
+//                SearchKey.setAdapter(adapter);
                 Parameter = MaterialCode.getText().toString();
                 SearchKey.setEnabled(true);
 //                Toast.makeText(InventoryForm.this, MaterialCode.getText(), Toast.LENGTH_SHORT).show();
@@ -281,12 +276,11 @@ public class InventoryForm extends AppCompatActivity {
 //
                     TempList_Inventory.add(TagId);
                 }
+
+                SetupRecyclerview();
                 StartReading.setEnabled(true);
                 SelectAll.setEnabled(true);
-                recyclerView.setHasFixedSize(true);
-                adapter_inventory = new Adapter_Inventory(ListInventory, getApplicationContext(), TempList_Inventory);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                recyclerView.setAdapter(adapter_inventory);
+                adapter_inventory.notifyDataSetChanged();
                 dialog.dismiss();
 
 
@@ -325,6 +319,13 @@ public class InventoryForm extends AppCompatActivity {
         };
 
         queue.add(stringRequest);
+    }
+
+    private void SetupRecyclerview() {
+        recyclerView.setHasFixedSize(true);
+        adapter_inventory = new Adapter_Inventory(ListInventory, getApplicationContext(), TempList_Inventory);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setAdapter(adapter_inventory);
     }
 
 

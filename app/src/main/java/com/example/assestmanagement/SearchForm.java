@@ -119,19 +119,19 @@ public class SearchForm extends AppCompatActivity {
 
             if (checkedId == R.id.MaterialCode) {
 
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                        (this, android.R.layout.simple_list_item_1, suggest);
-                SearchKey.setAdapter(adapter);
+//                ArrayAdapter<String> adapter = new ArrayAdapter<String>
+//                        (this, android.R.layout.simple_list_item_1, suggest);
+//                SearchKey.setAdapter(adapter);
                 String values = String.valueOf(MaterialCode.getText());
                 paravalues = values;
                 SearchKey.setEnabled(true);
 //                Toast.makeText(SearchForm.this, MaterialCode.getText(), Toast.LENGTH_SHORT).show();
                 SearchKey.setHint("Enter Material Code");
             } else if (checkedId == R.id.MaterialID) {
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                        (this, android.R.layout.simple_list_item_1, suggest);
-                SearchKey.setAdapter(adapter);
-                SearchKey.setEnabled(true);
+//                ArrayAdapter<String> adapter = new ArrayAdapter<String>
+//                        (this, android.R.layout.simple_list_item_1, suggest);
+//                SearchKey.setAdapter(adapter);
+//                SearchKey.setEnabled(true);
                 paravalues = (String) MaterialId.getText();
 //                Toast.makeText(SearchForm.this, MaterialId.getText(), Toast.LENGTH_SHORT).show();
             }
