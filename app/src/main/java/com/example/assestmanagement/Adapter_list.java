@@ -29,6 +29,8 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
     List<Data_Model_Search> list;
     Context context;
 
+    Data_Model_Search model_search;
+
 //    List<String> tempList;
 
     public Adapter_list(List<Data_Model_Search> list, Context context) {
@@ -49,7 +51,8 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
 //Initial Data model
-        Data_Model_Search model_search = list.get(position);
+
+        model_search = list.get(position);
 
         //Binding Data with components
         holder.head_subject.setText(model_search.getMaterialName());
@@ -57,12 +60,25 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
         holder.publisher.setText(model_search.getLocation());
         holder.language.setText(model_search.getMaterialDepartment());
         holder.checkBox.setSelected(model_search.getSelected());
+        for (Data_Model_Search row : list) {
+            if (row.getCheckList() == "True") {
+                row.setSelected(true);
+                row.setCheckList("True");
+            }else if (row.getCheckList() == "false")
+            {
+                row.setSelected(false);
+                row.setCheckList("false");
+            }
+
+        }
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     model_search.setSelected(true);
-                    model_search.setCheckList("True");
+
+
+                model_search.setCheckList("True");
                 } else {
                     model_search.setSelected(false);
                 }
@@ -199,7 +215,7 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
     //Method for Search
     public void getFilter(@NonNull Object search_value) {
         for (Data_Model_Search row : list) {
-            if (row.getCheckList().equals("True")){
+            if (row.getCheckList().equals("True")) {
                 if (row.getTagID().equals(search_value)) {
                     row.setColor("Green");
                     notifyDataSetChanged();
@@ -207,10 +223,6 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
                 }
                 notifyDataSetChanged();
             }
-//                else {
-//                    Toast.makeText(context.getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT).show();
-//                    break;
-//                }
         }
 
     }
@@ -223,5 +235,16 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
 //
 //        }
 //    }
+
+
+    public void selecteAll() {
+        Data_Model_Search data_model_search = new Data_Model_Search();
+//
+//        for (int i = 0; i < list.size(); i++) {
+//            data_model_search.setCheckList("True");
+//
+//        }
+
+    }
 
 }

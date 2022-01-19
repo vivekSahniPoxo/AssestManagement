@@ -18,7 +18,10 @@ public class Data_Model_Search {
     private String status;
     private boolean Selected;
     String Color;
-    String CheckList = "False";
+    String CheckList;
+
+    public Data_Model_Search() {
+    }
 
     public Data_Model_Search(String materialName, String materialID, String location, String materialDepartment, String tagId) {
         this.materialName = materialName;

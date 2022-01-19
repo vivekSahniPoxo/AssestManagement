@@ -62,6 +62,7 @@ public class InventoryForm extends AppCompatActivity {
     List<String> suggest;
     int counter = 0, len, not_founded;
     List<String> TempList_Inventory;
+    TextView SelectAll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +78,38 @@ public class InventoryForm extends AppCompatActivity {
         Total = findViewById(R.id.Total);
         Found = findViewById(R.id.Found);
         NotFound = findViewById(R.id.not_found);
+        SelectAll = findViewById(R.id.SelectALL);
         Searchbtn = findViewById(R.id.Search);
+
+
+        SelectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView b = (TextView) v;
+                String buttonText = b.getText().toString();
+                if (buttonText.matches("Select All")) {
+                    for (DataModel_Inventory model : ListInventory) {
+                        model.setCheckList("True");
+                    }
+                    adapter_inventory.notifyDataSetChanged();
+                    SelectAll.setText("DeSelect All");
+                } else {
+                    for (DataModel_Inventory model : ListInventory) {
+                        model.setCheckList("false");
+                    }
+                    adapter_inventory.notifyDataSetChanged();
+                    SelectAll.setText("Select All");
+
+                }
+//                for (DataModel_Inventory model : ListInventory) {
+//                    model.setCheckList("True");
+//                }
+//                adapter_inventory.notifyDataSetChanged();
+            }
+
+        });
+
+
         radioGroup.clearCheck();
         dialog = new ProgressDialog(this);
         TempList_Inventory = new ArrayList<>();
@@ -250,6 +282,7 @@ public class InventoryForm extends AppCompatActivity {
                     TempList_Inventory.add(TagId);
                 }
                 StartReading.setEnabled(true);
+                SelectAll.setEnabled(true);
                 recyclerView.setHasFixedSize(true);
                 adapter_inventory = new Adapter_Inventory(ListInventory, getApplicationContext(), TempList_Inventory);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));

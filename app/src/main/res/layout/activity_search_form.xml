@@ -212,7 +212,19 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-
+                        <TextView
+                            android:id="@+id/SelectALL"
+                            android:enabled="false"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_margin="5dp"
+                            android:background="@drawable/custom_btn"
+                            android:text="Select All"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.coordinatorlayout.widget.CoordinatorLayout>
             </androidx.cardview.widget.CardView>

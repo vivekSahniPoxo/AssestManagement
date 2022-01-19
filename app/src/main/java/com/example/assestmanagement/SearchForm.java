@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -63,6 +64,8 @@ public class SearchForm extends AppCompatActivity {
     String paravalues;
     List<String> suggest;
     private int mStatusCode = 0;
+    TextView SelectAll;
+    Data_Model_Search data_model_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,30 @@ public class SearchForm extends AppCompatActivity {
         New_Btn = findViewById(R.id.New_Button);
         SearchKey = findViewById(R.id.SearchKey);
         SearchData = findViewById(R.id.Search_Data);
+        SelectAll=findViewById(R.id.SelectALL);
+        data_model_search=new Data_Model_Search();
+        SelectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                TextView b = (TextView) v;
+                String buttonText = b.getText().toString();
+                if (buttonText.matches("Select All")) {
+                    for (Data_Model_Search model : ListSearch) {
+                        model.setCheckList("True");
+                    }
+                    adapter_list.notifyDataSetChanged();
+                    SelectAll.setText("DeSelect All");
+                } else {
+                    for (Data_Model_Search model : ListSearch) {
+                        model.setCheckList("false");
+                    }
+                    adapter_list.notifyDataSetChanged();
+                    SelectAll.setText("Select All");
+
+                }}
+
+        });
         radioGroup.clearCheck();
         dialog = new ProgressDialog(this);
 
@@ -245,6 +272,7 @@ public class SearchForm extends AppCompatActivity {
                 recyclerView.setAdapter(adapter_list);
                 adapter_list.notifyDataSetChanged();
 StartBtn.setEnabled(true);
+SelectAll.setEnabled(true);
 
                 dialog.dismiss();
 //                    Toast.makeText(Inventory_form.this, name, Toast.LENGTH_LONG).show();

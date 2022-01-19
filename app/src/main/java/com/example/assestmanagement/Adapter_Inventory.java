@@ -55,6 +55,18 @@ public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.My
         holder.publisher.setText(dataModel_inventory.getLocation());
         holder.language.setText(dataModel_inventory.getMaterialDepartment());
         holder.checkBox.setSelected(dataModel_inventory.getSelected());
+
+        for (DataModel_Inventory row : list) {
+            if (row.getCheckList() == "True") {
+                row.setSelected(true);
+                row.setCheckList("True");
+            }else if (row.getCheckList() == "false")
+            {
+                row.setSelected(false);
+                row.setCheckList("false");
+            }
+
+        }
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
