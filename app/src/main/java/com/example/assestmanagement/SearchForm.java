@@ -79,8 +79,9 @@ public class SearchForm extends AppCompatActivity {
         New_Btn = findViewById(R.id.New_Button);
         SearchKey = findViewById(R.id.SearchKey);
         SearchData = findViewById(R.id.Search_Data);
-        SelectAll=findViewById(R.id.SelectALL);
-        data_model_search=new Data_Model_Search();
+        SelectAll = findViewById(R.id.SelectALL);
+        data_model_search = new Data_Model_Search();
+
         SelectAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +101,8 @@ public class SearchForm extends AppCompatActivity {
                     adapter_list.notifyDataSetChanged();
                     SelectAll.setText("Select All");
 
-                }}
+                }
+            }
 
         });
         radioGroup.clearCheck();
@@ -112,6 +114,7 @@ public class SearchForm extends AppCompatActivity {
 
         coordinatorLayout = findViewById(R.id.coordinator);
         iuhfService = UHFManager.getUHFService(this);
+        iuhfService.setAntennaPower(SettingActivity.progressChangedValue);
         looperDemo = new LooperDemo();
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             RadioButton MaterialId = (RadioButton) group.findViewById(R.id.MaterialID);
@@ -131,7 +134,7 @@ public class SearchForm extends AppCompatActivity {
 //                ArrayAdapter<String> adapter = new ArrayAdapter<String>
 //                        (this, android.R.layout.simple_list_item_1, suggest);
 //                SearchKey.setAdapter(adapter);
-//                SearchKey.setEnabled(true);
+                SearchKey.setEnabled(true);
                 paravalues = (String) MaterialId.getText();
 //                Toast.makeText(SearchForm.this, MaterialId.getText(), Toast.LENGTH_SHORT).show();
             }
@@ -207,8 +210,8 @@ public class SearchForm extends AppCompatActivity {
 
 
     private void SuggestList() {
-        String url = "http://164.52.223.163:4501/api/storematerial/distinctlocation";
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+//        String url = "http://164.52.223.163:4501/api/storematerial/distinctlocation";
+        StringRequest request = new StringRequest(Request.Method.POST, ApiCLass.List, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -238,7 +241,7 @@ public class SearchForm extends AppCompatActivity {
     //Method for Search Data From Server using Accession Number
     private void FetchData(String parameter, String value) throws JSONException {
 
-        String url = "http://164.52.223.163:4501/api/storematerial/searchmaterial";
+//        String url = "http://164.52.223.163:4501/api/storematerial/searchmaterial";
         JSONObject obj = new JSONObject();
 //        obj.put("AccessNo", "B1228");
         obj.put(parameter, value);
@@ -248,7 +251,7 @@ public class SearchForm extends AppCompatActivity {
 
         final String requestBody = obj.toString();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiCLass.SearchMaterialID, response -> {
 
             try {
 
@@ -261,9 +264,9 @@ public class SearchForm extends AppCompatActivity {
                     String Material_Model = object.getString("Material_ID");
                     String Material_Department = object.getString("Material_Department");
                     String Location = object.getString("Location");
-                    String TagId= object.getString("TagID");
+                    String TagId = object.getString("TagID");
 
-                    ListSearch.add(new Data_Model_Search(Material_Name, Material_Model, Location, Material_Department,TagId));
+                    ListSearch.add(new Data_Model_Search(Material_Name, Material_Model, Location, Material_Department, TagId));
 //
 //                    TempList_Inventory.add(RFIDNO);
                 }
@@ -271,8 +274,8 @@ public class SearchForm extends AppCompatActivity {
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 recyclerView.setAdapter(adapter_list);
                 adapter_list.notifyDataSetChanged();
-StartBtn.setEnabled(true);
-SelectAll.setEnabled(true);
+                StartBtn.setEnabled(true);
+                SelectAll.setEnabled(true);
 
                 dialog.dismiss();
 //                    Toast.makeText(Inventory_form.this, name, Toast.LENGTH_LONG).show();
@@ -284,14 +287,14 @@ SelectAll.setEnabled(true);
         }, error -> {
             Log.e("VOLLEY Negative", String.valueOf(error.networkResponse.statusCode));
 
-                if (error.networkResponse.statusCode == 404) {
-                    Toast.makeText(SearchForm.this, "No Result Found", Toast.LENGTH_SHORT).show();
-                } else if (error.networkResponse.statusCode == 400) {
-                    Toast.makeText(SearchForm.this, "Bad Request", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(SearchForm.this, "Unable to process the request", Toast.LENGTH_SHORT).show();
+            if (error.networkResponse.statusCode == 404) {
+                Toast.makeText(SearchForm.this, "No Result Found", Toast.LENGTH_SHORT).show();
+            } else if (error.networkResponse.statusCode == 400) {
+                Toast.makeText(SearchForm.this, "Bad Request", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(SearchForm.this, "Unable to process the request", Toast.LENGTH_SHORT).show();
 
-                }
+            }
 
             dialog.dismiss();
         }) {

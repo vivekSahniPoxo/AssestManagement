@@ -12,9 +12,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 CardView Searchtab,InventoryTab;
+ImageView setting;
+SettingActivity settingActivity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,9 +26,13 @@ CardView Searchtab,InventoryTab;
         //Binding Components
         Searchtab=findViewById(R.id.search_tab);
         InventoryTab=findViewById(R.id.InventoryTab);
+        setting=findViewById(R.id._Setting);
 
         //Method for Internet Connection Check
         isNetworkConnectionAvailable();
+
+        settingActivity = new SettingActivity();
+//        Toast.makeText(MainActivity.this, "VAlue"+settingActivity.progressChangedValue, Toast.LENGTH_SHORT).show();
 
         //Listener
         Searchtab.setOnClickListener(new View.OnClickListener() {
@@ -34,10 +42,20 @@ CardView Searchtab,InventoryTab;
             }
         });
 
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(MainActivity.this,SettingActivity.class));
+            }
+        });
+
         InventoryTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,InventoryForm.class));
+//                Toast.makeText(MainActivity.this, ""+SettingActivity.progressChangedValue, Toast.LENGTH_SHORT).show();
+//                System.out.println("Value of Seekbar "+settingActivity.progressChangedValue);
 
             }
         });

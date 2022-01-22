@@ -3,14 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/drawable/border_shadow.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/drawable/custom_btn.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/drawable/custom_card.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/drawable/custom_edittext.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/drawable/custom_thumb.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/drawable/ic_baseline_check_circle_24.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/drawable/seekbar_progress.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/drawable/seekbar_style.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/drawable/toggle.xml" value="0.20512820512820512" />
-        <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/layout/activity_inventory_form.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/layout/activity_inventory_form.xml" value="0.12" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/layout/activity_search_form.xml" value="0.22" />
+        <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/layout/activity_setting.xml" value="0.2" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/layout/customdailog.xml" value="0.25" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/AssestManagement/app/src/main/res/layout/list.xml" value="0.1921875" />
       </map>

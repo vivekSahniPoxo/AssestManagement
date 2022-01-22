@@ -217,7 +217,7 @@ public class InventoryForm extends AppCompatActivity {
 
     private void SuggestList() {
         String url = "http://164.52.223.163:4501/api/storematerial/distinctlocation";
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.POST, ApiCLass.List, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -256,7 +256,7 @@ public class InventoryForm extends AppCompatActivity {
 
         final String requestBody = obj.toString();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiCLass.InventoryLocation, response -> {
             ListInventory.clear();
 
             try {
