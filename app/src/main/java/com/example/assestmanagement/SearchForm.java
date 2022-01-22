@@ -1,18 +1,14 @@
 package com.example.assestmanagement;
 
-import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Editable;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -32,7 +28,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
@@ -45,7 +40,6 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class SearchForm extends AppCompatActivity {
@@ -63,7 +57,6 @@ public class SearchForm extends AppCompatActivity {
     Button SearchData;
     String paravalues;
     List<String> suggest;
-    private int mStatusCode = 0;
     TextView SelectAll;
     Data_Model_Search data_model_search;
 
@@ -82,28 +75,24 @@ public class SearchForm extends AppCompatActivity {
         SelectAll = findViewById(R.id.SelectALL);
         data_model_search = new Data_Model_Search();
 
-        SelectAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        SelectAll.setOnClickListener(v -> {
 
-                TextView b = (TextView) v;
-                String buttonText = b.getText().toString();
-                if (buttonText.matches("Select All")) {
-                    for (Data_Model_Search model : ListSearch) {
-                        model.setCheckList("True");
-                    }
-                    adapter_list.notifyDataSetChanged();
-                    SelectAll.setText("DeSelect All");
-                } else {
-                    for (Data_Model_Search model : ListSearch) {
-                        model.setCheckList("false");
-                    }
-                    adapter_list.notifyDataSetChanged();
-                    SelectAll.setText("Select All");
-
+            TextView b = (TextView) v;
+            String buttonText = b.getText().toString();
+            if (buttonText.matches("Select All")) {
+                for (Data_Model_Search model : ListSearch) {
+                    model.setCheckList("True");
                 }
-            }
+                adapter_list.notifyDataSetChanged();
+                SelectAll.setText("DeSelect All");
+            } else {
+                for (Data_Model_Search model : ListSearch) {
+                    model.setCheckList("false");
+                }
+                adapter_list.notifyDataSetChanged();
+                SelectAll.setText("Select All");
 
+            }
         });
         radioGroup.clearCheck();
         dialog = new ProgressDialog(this);
@@ -114,7 +103,7 @@ public class SearchForm extends AppCompatActivity {
 
         coordinatorLayout = findViewById(R.id.coordinator);
         iuhfService = UHFManager.getUHFService(this);
-        iuhfService.setAntennaPower(SettingActivity.progressChangedValue);
+        iuhfService.setAntennaPower(SettingActivity.progressChangedValueUpdate);
         looperDemo = new LooperDemo();
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             RadioButton MaterialId = (RadioButton) group.findViewById(R.id.MaterialID);
@@ -315,7 +304,6 @@ public class SearchForm extends AppCompatActivity {
 
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                mStatusCode = response.statusCode;
 
                 return super.parseNetworkResponse(response);
             }

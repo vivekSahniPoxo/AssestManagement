@@ -6,15 +6,18 @@ import androidx.cardview.widget.CardView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
 public class SettingActivity extends AppCompatActivity {
     CardView ipconfig, ifconfigForm, setpower, setpowerform;
-    Button submitConfig,submitpower;
+    Button submitConfig, submitpower;
     SeekBar seekBar;
-  public static int progressChangedValue = 0;
-
+    EditText baseUrlConfig;
+    public static String UpdateBaseUrl;
+    public static int progressChangedValue = 0;
+    public static int progressChangedValueUpdate = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +28,10 @@ public class SettingActivity extends AppCompatActivity {
         setpower = findViewById(R.id.setPower);
         setpowerform = findViewById(R.id.setpowerform);
         submitConfig = findViewById(R.id.button_submit_url);
-        submitpower=findViewById(R.id.submitpower);
-        seekBar=findViewById(R.id.seekBar_luminosite);
+        baseUrlConfig = findViewById(R.id.baseUrlConfig);
+        submitpower = findViewById(R.id.submitpower);
+        UpdateBaseUrl = baseUrlConfig.getText().toString().trim();
+        seekBar = findViewById(R.id.seekBar_luminosite);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -43,7 +48,8 @@ public class SettingActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
                 seekBar.setProgress(progressChangedValue);
             }
-        });        setpower.setOnClickListener(new View.OnClickListener() {
+        });
+        setpower.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setpowerform.setVisibility(View.VISIBLE);
@@ -53,12 +59,15 @@ public class SettingActivity extends AppCompatActivity {
         submitpower.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 setpowerform.setVisibility(View.GONE);
+                progressChangedValueUpdate = progressChangedValue;
             }
         });
         submitConfig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ApiCLass.baseUrl = UpdateBaseUrl;
                 ifconfigForm.setVisibility(View.GONE);
             }
         });

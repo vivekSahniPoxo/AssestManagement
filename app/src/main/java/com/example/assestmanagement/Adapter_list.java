@@ -214,16 +214,22 @@ public class Adapter_list extends RecyclerView.Adapter<Adapter_list.myviewholder
 
     //Method for Search
     public void getFilter(@NonNull Object search_value) {
-        for (Data_Model_Search row : list) {
-            if (row.getCheckList().equals("True")) {
-                if (row.getTagID().equals(search_value)) {
-                    row.setColor("Green");
+        try {
+            for (Data_Model_Search row : list) {
+                if (row.getCheckList().equals("True")) {
+                    if (row.getTagID().equals(search_value)) {
+                        row.setColor("Green");
+                        notifyDataSetChanged();
+                        break;
+                    }
                     notifyDataSetChanged();
-                    break;
                 }
-                notifyDataSetChanged();
             }
+        }catch (Exception e)
+        {
+            Toast.makeText(context, "Please Select Item to be Search", Toast.LENGTH_SHORT).show();
         }
+
 
     }
 

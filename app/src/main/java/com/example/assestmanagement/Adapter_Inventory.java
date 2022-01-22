@@ -60,8 +60,7 @@ public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.My
             if (row.getCheckList() == "True") {
                 row.setSelected(true);
                 row.setCheckList("True");
-            }else if (row.getCheckList() == "false")
-            {
+            } else if (row.getCheckList() == "false") {
                 row.setSelected(false);
                 row.setCheckList("false");
             }
@@ -183,22 +182,26 @@ public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.My
     int bookFooundCount = 0;
 
     public int getFilter(Object search_value) {
-        if (templist.contains(search_value)) {
-            for (DataModel_Inventory row : list) {
-                if (row.getCheckList().equals("True")) {
-                    if (row.getTagID().equals(search_value)) {
-                        row.setColor("Green");
-                        row.setStatus("True");
-                        bookFooundCount = bookFooundCount + 1;
+        try {
+            if (templist.contains(search_value)) {
+                for (DataModel_Inventory row : list) {
+                    if (row.getCheckList().equals("True")) {
+                        if (row.getTagID().equals(search_value)) {
+                            row.setColor("Green");
+                            row.setStatus("True");
+                            bookFooundCount = bookFooundCount + 1;
+                            notifyDataSetChanged();
+                            break;
+                        }
                         notifyDataSetChanged();
-                        break;
                     }
-                    notifyDataSetChanged();
                 }
+                templist.remove(search_value);
             }
-            templist.remove(search_value);
-        }
 
+        } catch (Exception e) {
+            Toast.makeText(c, "SelectItem to be Search...", Toast.LENGTH_SHORT).show();
+        }
         return bookFooundCount;
     }
 
