@@ -79,33 +79,30 @@ public class Adapter_Inventory extends RecyclerView.Adapter<Adapter_Inventory.My
             }
         });
         holder.checkBox.setChecked(dataModel_inventory.getSelected());
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
-                View dailogbox = LayoutInflater.from(v.getRootView().getContext()).inflate(R.layout.customdailog, null);
-                TextView t1 = dailogbox.findViewById(R.id.t1);
-                TextView t2 = dailogbox.findViewById(R.id.t2);
-                TextView t3 = dailogbox.findViewById(R.id.t3);
-                TextView t4 = dailogbox.findViewById(R.id.t4);
-                TextView t5 = dailogbox.findViewById(R.id.t5);
-                TextView t6 = dailogbox.findViewById(R.id.t6);
-                TextView t7 = dailogbox.findViewById(R.id.t7);
+        holder.cardView.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
+            View dailogbox = LayoutInflater.from(v.getRootView().getContext()).inflate(R.layout.customdailog, null);
+            TextView t1 = dailogbox.findViewById(R.id.t1);
+            TextView t2 = dailogbox.findViewById(R.id.t2);
+            TextView t3 = dailogbox.findViewById(R.id.t3);
+            TextView t4 = dailogbox.findViewById(R.id.t4);
+            TextView t5 = dailogbox.findViewById(R.id.t5);
+            TextView t6 = dailogbox.findViewById(R.id.t6);
+            TextView t7 = dailogbox.findViewById(R.id.t7);
 
 
-                t1.setText(dataModel_inventory.getMaterialName());
-                t2.setText(dataModel_inventory.getMaterialModel());
-                t3.setText(dataModel_inventory.getLocation());
-                t4.setText(dataModel_inventory.getMaterialDepartment());
-                t5.setText(dataModel_inventory.getAssignedToEmpID());
-                t6.setText(dataModel_inventory.getCost());
-                t7.setText(dataModel_inventory.getTagID());
+            t1.setText(dataModel_inventory.getMaterialName());
+            t2.setText(dataModel_inventory.getMaterialModel());
+            t3.setText(dataModel_inventory.getLocation());
+            t4.setText(dataModel_inventory.getMaterialDepartment());
+            t5.setText(dataModel_inventory.getAssignedToEmpID());
+            t6.setText(dataModel_inventory.getCost());
+            t7.setText(dataModel_inventory.getTagID());
 
-                builder.setView(dailogbox);
-                builder.setCancelable(true);
-                builder.show();
+            builder.setView(dailogbox);
+            builder.setCancelable(true);
+            builder.show();
 
-            }
         });
 
 //       Change color if Search Found
